@@ -52,6 +52,7 @@ tags: [systems, databases]
 cover: "/images/books/cover.jpg"
 rating: 5
 status: finished
+buy_link: "https://amazon.com/..."
 draft: false
 ---
 
@@ -125,12 +126,45 @@ date: 2026-03-09
 tags: [deep-learning, computer-vision]
 category: "DL"
 embed_url: "https://your-demo-url.com"
+github: "https://github.com/..."
+live: "https://live-demo-url.com"
 draft: false
 ---
 
 Description of the demo. Category options for filtering: ML, DL, GenAI, etc.
 The embed_url will be rendered as an iframe. Omit it to show a "coming soon" placeholder.
 ```
+
+### GenAI
+
+Create `src/content/genai/<slug>.md`:
+
+```markdown
+---
+title: "Post Title"
+date: 2026-03-09
+tags: [rag, embeddings, vector-db]
+category: "RAG"
+description: "A short summary for cards and SEO."
+draft: false
+---
+
+Content here.
+```
+
+Available categories for filtering:
+- Pre-training
+- Post-training
+- Fine-tuning
+- Inference
+- Agentic AI
+- RAG
+- Prompt Engineering
+- Evaluation
+- Multimodal
+- LLMOps
+
+Just use the category value in frontmatter — no code changes needed.
 
 ### Diagrams
 
