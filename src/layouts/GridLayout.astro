@@ -1,0 +1,24 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="grid-layout">
+    <slot />
+  </main>
+</BaseLayout>
+
+<style>
+  .grid-layout {
+    max-width: var(--max-width-page);
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-lg);
+  }
+</style>
