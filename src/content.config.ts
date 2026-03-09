@@ -117,6 +117,18 @@ const genai = defineCollection({
   }),
 });
 
+const systemDesign = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/system-design' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    tags: z.array(z.string()),
+    category: z.string().optional(),
+    description: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   blog,
   paperself,
@@ -127,4 +139,5 @@ export const collections = {
   ai,
   demos,
   genai,
+  'system-design': systemDesign,
 };

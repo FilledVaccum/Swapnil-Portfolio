@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import GridLayout from '../../layouts/GridLayout.astro';
+import Card from '../../components/Card.astro';
+import CategoryFilter from '../../components/CategoryFilter.astro';
+
+const posts = (await getCollection('system-design'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const categories = [...new Set(posts.map(p => p.data.category).filter(Boolean))] as string[];
+---
+
+<GridLayout title="System Design">
+  <h1>System Design</h1>
+  <p class="section-desc">Architectures, trade-offs, and patterns for building systems at scale.</p>
+  {categories.length > 0 && <CategoryFilter categories={categories} sectionId="system-design" />}
+  <div class="card-grid" data-section-items="system-design">
+    {posts.map(post => (
+      <div data-category={post.data.category || 'uncategorized'}>
+        <Card
+          title={post.data.title}
+          href={`/system-design/${post.id}`}
+          description={post.data.description}
+          date={post.data.date}
+          tags={post.data.tags}
+        />
+      </div>
+    ))}
+  </div>
+</GridLayout>
+
+<style>
+  h1 { margin-bottom: var(--space-sm); }
+  .section-desc {
+    color: var(--color-warm-gray);
+    margin-bottom: var(--space-xl);
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+  }
+</style>
