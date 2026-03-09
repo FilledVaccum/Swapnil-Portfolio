@@ -20,8 +20,10 @@ const { Content } = await render(project);
   />
   <div class="project-meta">
     <p><strong>Tech:</strong> {project.data.tech.join(', ')}</p>
-    {project.data.github && <p><a href={project.data.github} target="_blank" rel="noopener noreferrer">GitHub →</a></p>}
-    {project.data.live && <p><a href={project.data.live} target="_blank" rel="noopener noreferrer">Live demo →</a></p>}
+    <div class="external-links">
+      {project.data.github && <a href={project.data.github} target="_blank" rel="noopener noreferrer" class="link-pill">GitHub</a>}
+      {project.data.live && <a href={project.data.live} target="_blank" rel="noopener noreferrer" class="link-pill">Live Demo</a>}
+    </div>
   </div>
   <article class="prose">
     <Content />
@@ -35,8 +37,27 @@ const { Content } = await render(project);
     padding: var(--space-lg);
     margin-bottom: var(--space-xl);
   }
-  .project-meta p { margin-bottom: var(--space-xs); font-size: var(--text-sm); }
-  .project-meta p:last-child { margin-bottom: 0; }
+  .project-meta p { margin-bottom: var(--space-sm); font-size: var(--text-sm); }
+  .external-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+  .link-pill {
+    display: inline-block;
+    font-size: var(--text-sm);
+    color: var(--color-cream);
+    background: var(--color-clay);
+    padding: 0.4em 1.2em;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .link-pill:hover {
+    background: var(--color-olive);
+    color: var(--color-cream);
+  }
   .prose :global(h2) { margin-top: var(--space-xl); margin-bottom: var(--space-md); }
   .prose :global(p) { margin-bottom: var(--space-md); }
 </style>

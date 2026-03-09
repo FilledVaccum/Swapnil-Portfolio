@@ -19,6 +19,12 @@ const { Content } = await render(demo);
     date={demo.data.date}
     tags={demo.data.tags}
   />
+  {(demo.data.github || demo.data.live) && (
+    <div class="external-links">
+      {demo.data.github && <a href={demo.data.github} target="_blank" rel="noopener noreferrer" class="link-pill">GitHub</a>}
+      {demo.data.live && <a href={demo.data.live} target="_blank" rel="noopener noreferrer" class="link-pill">Live Demo</a>}
+    </div>
+  )}
   <DemoEmbed title={demo.data.title} embed_url={demo.data.embed_url} />
   <article class="prose">
     <Content />
@@ -26,6 +32,26 @@ const { Content } = await render(demo);
 </ContentLayout>
 
 <style>
+  .external-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+  }
+  .link-pill {
+    display: inline-block;
+    font-size: var(--text-sm);
+    color: var(--color-cream);
+    background: var(--color-clay);
+    padding: 0.4em 1.2em;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .link-pill:hover {
+    background: var(--color-olive);
+    color: var(--color-cream);
+  }
   .prose :global(h2) { margin-top: var(--space-xl); margin-bottom: var(--space-md); }
   .prose :global(p) { margin-bottom: var(--space-md); }
 </style>

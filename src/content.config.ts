@@ -36,6 +36,7 @@ const bookself = defineCollection({
     cover: z.string().optional(),
     rating: z.number().min(1).max(5).optional(),
     status: z.enum(['reading', 'finished', 'abandoned']),
+    buy_link: z.string().url().optional(),
     draft: z.boolean().default(false),
   }),
 });
@@ -98,6 +99,20 @@ const demos = defineCollection({
     tags: z.array(z.string()),
     category: z.string().optional(),
     embed_url: z.string().url().optional(),
+    github: z.string().url().optional(),
+    live: z.string().url().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+const genai = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/genai' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    tags: z.array(z.string()),
+    category: z.string().optional(),
+    description: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
@@ -111,4 +126,5 @@ export const collections = {
   projects,
   ai,
   demos,
+  genai,
 };
