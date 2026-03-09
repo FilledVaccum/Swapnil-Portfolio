@@ -3,18 +3,24 @@ const currentPath = Astro.url.pathname;
 
 const primaryLinks = [
   { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/ai', label: 'AI' },
+];
+
+const readingLinks = [
   { href: '/paperself', label: 'Paperself' },
   { href: '/bookself', label: 'Bookself' },
-  { href: '/projects', label: 'Projects' },
 ];
 
 const moreLinks = [
   { href: '/talks', label: 'Talks' },
-  { href: '/list100', label: 'List100' },
   { href: '/diagrams', label: 'Diagrams' },
-  { href: '/ai', label: 'AI' },
   { href: '/demos', label: 'Demos' },
+  { href: '/list100', label: 'List100' },
 ];
+
+const readingActive = readingLinks.some(l => currentPath.startsWith(l.href));
+const moreActive = moreLinks.some(l => currentPath.startsWith(l.href));
 ---
 
 <nav class="nav">
@@ -28,11 +34,24 @@ const moreLinks = [
         </a>
       ))}
 
-      <div class="nav-more">
-        <button class="nav-link nav-more-btn" id="more-btn">
-          More <span class="more-arrow">&#9662;</span>
+      <div class="nav-dropdown-wrap" data-dropdown="reading">
+        <button class:list={['nav-link nav-dropdown-btn', { active: readingActive }]}>
+          Reading <span class="dropdown-arrow">&#9662;</span>
         </button>
-        <div class="nav-dropdown" id="nav-dropdown">
+        <div class="nav-dropdown">
+          {readingLinks.map(link => (
+            <a href={link.href} class:list={['dropdown-link', { active: currentPath.startsWith(link.href) }]}>
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="nav-dropdown-wrap" data-dropdown="more">
+        <button class:list={['nav-link nav-dropdown-btn', { active: moreActive }]}>
+          More <span class="dropdown-arrow">&#9662;</span>
+        </button>
+        <div class="nav-dropdown">
           {moreLinks.map(link => (
             <a href={link.href} class:list={['dropdown-link', { active: currentPath.startsWith(link.href) }]}>
               {link.label}
@@ -53,7 +72,19 @@ const moreLinks = [
 
   <!-- Mobile menu -->
   <div class="nav-mobile" id="mobile-menu">
-    {[...primaryLinks, ...moreLinks].map(link => (
+    {primaryLinks.map(link => (
+      <a href={link.href} class:list={['mobile-link', { active: currentPath.startsWith(link.href) }]}>
+        {link.label}
+      </a>
+    ))}
+    <span class="mobile-section-label">Reading</span>
+    {readingLinks.map(link => (
+      <a href={link.href} class:list={['mobile-link', { active: currentPath.startsWith(link.href) }]}>
+        {link.label}
+      </a>
+    ))}
+    <span class="mobile-section-label">More</span>
+    {moreLinks.map(link => (
       <a href={link.href} class:list={['mobile-link', { active: currentPath.startsWith(link.href) }]}>
         {link.label}
       </a>
@@ -123,22 +154,22 @@ const moreLinks = [
     color: var(--color-clay);
   }
 
-  .nav-more {
+  .nav-dropdown-wrap {
     position: relative;
   }
 
-  .nav-more-btn {
+  .nav-dropdown-btn {
     display: flex;
     align-items: center;
     gap: 0.25rem;
   }
 
-  .more-arrow {
+  .dropdown-arrow {
     font-size: 0.6em;
     transition: transform var(--transition-fast);
   }
 
-  .nav-more.open .more-arrow {
+  .nav-dropdown-wrap.open .dropdown-arrow {
     transform: rotate(180deg);
   }
 
@@ -155,7 +186,7 @@ const moreLinks = [
     box-shadow: var(--shadow-card);
   }
 
-  .nav-more.open .nav-dropdown {
+  .nav-dropdown-wrap.open .nav-dropdown {
     display: block;
   }
 
@@ -233,26 +264,39 @@ const moreLinks = [
   .mobile-link:hover, .mobile-link.active {
     color: var(--color-clay);
   }
+
+  .mobile-section-label {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-stone);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: var(--space-md) 0 var(--space-xs);
+  }
 </style>
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function() {
-    var moreBtn = document.getElementById('more-btn');
-    var navMore = moreBtn ? moreBtn.closest('.nav-more') : null;
+    var dropdowns = document.querySelectorAll('.nav-dropdown-wrap');
     var hamburger = document.getElementById('hamburger');
     var mobileMenu = document.getElementById('mobile-menu');
 
-    if (moreBtn) {
-      moreBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (navMore) navMore.classList.toggle('open');
-      });
-    }
-
-    document.addEventListener('click', function(e) {
-      if (navMore && !navMore.contains(e.target)) {
-        navMore.classList.remove('open');
+    dropdowns.forEach(function(dropdown) {
+      var btn = dropdown.querySelector('.nav-dropdown-btn');
+      if (btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          // Close other dropdowns
+          dropdowns.forEach(function(other) {
+            if (other !== dropdown) other.classList.remove('open');
+          });
+          dropdown.classList.toggle('open');
+        });
       }
+    });
+
+    document.addEventListener('click', function() {
+      dropdowns.forEach(function(d) { d.classList.remove('open'); });
     });
 
     if (hamburger) {
