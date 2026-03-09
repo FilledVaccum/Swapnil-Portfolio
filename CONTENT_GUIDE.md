@@ -152,19 +152,51 @@ draft: false
 Content here.
 ```
 
-Available categories for filtering:
-- Pre-training
-- Post-training
-- Fine-tuning
-- Inference
-- Agentic AI
-- RAG
-- Prompt Engineering
-- Evaluation
-- Multimodal
-- LLMOps
+The GenAI page displays content grouped by subsection. Each post appears under its `category` heading. All 10 subsections are always visible on the page (even when empty):
 
-Just use the category value in frontmatter — no code changes needed.
+| Subsection | What it covers |
+|------------|---------------|
+| Pre-training | Foundation model architectures, scaling laws, data curation, tokenization |
+| Post-training | RLHF, DPO, constitutional AI, alignment, safety |
+| Fine-tuning | LoRA, QLoRA, PEFT, instruction tuning, domain adaptation |
+| Inference | Serving, quantization, KV caching, speculative decoding, cost optimization |
+| Agentic AI | Agent frameworks, tool use, planning, multi-agent, MCP |
+| RAG | Embeddings, vector DBs, chunking, hybrid search, retrieval strategies |
+| Prompt Engineering | Techniques, chain-of-thought, few-shot, system prompts, structured output |
+| Evaluation | Benchmarks, evals, red-teaming, automated eval, human eval |
+| Multimodal | Vision-language, audio, video, image generation |
+| LLMOps | Deployment, monitoring, cost management, model lifecycle, guardrails |
+
+Use the exact category name from the table above in your frontmatter. Posts without a matching category appear under "Other".
+
+### System Design
+
+Create `src/content/system-design/<slug>.md`:
+
+```markdown
+---
+title: "Post Title"
+date: 2026-03-09
+tags: [distributed-systems, scalability]
+category: "Distributed Systems"
+description: "A short summary for cards and SEO."
+draft: false
+---
+
+Content here.
+```
+
+Categories are used for filtering on the page. Use any value — common examples:
+- Distributed Systems
+- Database Design
+- API Design
+- Scalability
+- Caching
+- Messaging & Queues
+- Load Balancing
+- Microservices
+
+No code changes needed to add new categories — just use a new value in frontmatter.
 
 ### Diagrams
 
@@ -245,7 +277,7 @@ GitHub Action builds automatically on push to `main`.
 - **File names become URLs**: `src/content/blog/my-post.md` → `/blog/my-post`
 - **Images**: Put in `public/images/` and reference as `/images/filename.png`
 - **SVGs in blogs**: Paste inline SVG directly in the markdown body
-- **Categories**: Used for filtering on Diagrams, AI, and Demos pages. Just use a new value in frontmatter — no code changes needed
+- **Categories**: Used for filtering/grouping on GenAI, System Design, AI, Diagrams, and Demos pages. Just use a new value in frontmatter — no code changes needed
 - **Featured projects**: Set `featured: true` to show on homepage (latest 3 shown)
 
 ## Using an LLM to Author Content
