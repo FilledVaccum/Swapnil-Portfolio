@@ -1,0 +1,262 @@
+---
+const currentPath = Astro.url.pathname;
+
+const primaryLinks = [
+  { href: '/blog', label: 'Blog' },
+  { href: '/paperself', label: 'Paperself' },
+  { href: '/bookself', label: 'Bookself' },
+  { href: '/projects', label: 'Projects' },
+];
+
+const moreLinks = [
+  { href: '/talks', label: 'Talks' },
+  { href: '/list100', label: 'List100' },
+  { href: '/diagrams', label: 'Diagrams' },
+  { href: '/ai', label: 'AI' },
+  { href: '/demos', label: 'Demos' },
+];
+---
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-name">Your Name</a>
+
+    <div class="nav-links" id="nav-links">
+      {primaryLinks.map(link => (
+        <a href={link.href} class:list={['nav-link', { active: currentPath.startsWith(link.href) }]}>
+          {link.label}
+        </a>
+      ))}
+
+      <div class="nav-more">
+        <button class="nav-link nav-more-btn" id="more-btn">
+          More <span class="more-arrow">&#9662;</span>
+        </button>
+        <div class="nav-dropdown" id="nav-dropdown">
+          {moreLinks.map(link => (
+            <a href={link.href} class:list={['dropdown-link', { active: currentPath.startsWith(link.href) }]}>
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <a href="/about" class:list={['nav-link', { active: currentPath.startsWith('/about') }]}>About</a>
+    </div>
+
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="nav-mobile" id="mobile-menu">
+    {[...primaryLinks, ...moreLinks].map(link => (
+      <a href={link.href} class:list={['mobile-link', { active: currentPath.startsWith(link.href) }]}>
+        {link.label}
+      </a>
+    ))}
+    <a href="/about" class:list={['mobile-link', { active: currentPath.startsWith('/about') }]}>About</a>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-cream);
+    border-bottom: 1px solid var(--color-stone);
+  }
+
+  .nav-inner {
+    max-width: var(--max-width-page);
+    margin: 0 auto;
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-name {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-charcoal);
+    text-decoration: none;
+  }
+
+  .nav-name:hover {
+    color: var(--color-clay);
+  }
+
+  .nav-links {
+    display: none;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .nav-links {
+      display: flex;
+    }
+
+    .nav-hamburger {
+      display: none;
+    }
+  }
+
+  .nav-link {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-warm-gray);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    color: var(--color-clay);
+  }
+
+  .nav-more {
+    position: relative;
+  }
+
+  .nav-more-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .more-arrow {
+    font-size: 0.6em;
+    transition: transform var(--transition-fast);
+  }
+
+  .nav-more.open .more-arrow {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + var(--space-sm));
+    right: 0;
+    background: var(--color-cream-light);
+    border: 1px solid var(--color-stone);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) 0;
+    min-width: 140px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .nav-more.open .nav-dropdown {
+    display: block;
+  }
+
+  .dropdown-link {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-warm-gray);
+    text-decoration: none;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .dropdown-link:hover, .dropdown-link.active {
+    color: var(--color-clay);
+    background: var(--color-cream);
+  }
+
+  .nav-hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: var(--space-md);
+  }
+
+  .nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-charcoal);
+    transition: transform var(--transition-fast), opacity var(--transition-fast);
+  }
+
+  .nav-hamburger.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .nav-hamburger.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-hamburger.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  .nav-mobile {
+    display: none;
+    flex-direction: column;
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    border-top: 1px solid var(--color-stone);
+  }
+
+  .nav-mobile.open {
+    display: flex;
+  }
+
+  @media (min-width: 768px) {
+    .nav-mobile {
+      display: none !important;
+    }
+  }
+
+  .mobile-link {
+    padding: var(--space-sm) 0;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-warm-gray);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-stone);
+  }
+
+  .mobile-link:last-child {
+    border-bottom: none;
+  }
+
+  .mobile-link:hover, .mobile-link.active {
+    color: var(--color-clay);
+  }
+</style>
+
+<script>
+  const moreBtn = document.getElementById('more-btn');
+  const navMore = moreBtn?.closest('.nav-more');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  moreBtn?.addEventListener('click', () => {
+    navMore?.classList.toggle('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!navMore?.contains(e.target as Node)) {
+      navMore?.classList.remove('open');
+    }
+  });
+
+  hamburger?.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu?.classList.toggle('open');
+  });
+</script>
