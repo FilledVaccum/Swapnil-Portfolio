@@ -1,0 +1,13 @@
+items:
+  - id: 1
+    text: "Run a marathon"
+    status: "todo"
+  - id: 2
+    text: "Read 100 research papers"
+    status: "in-progress"
+    note: "12/100"
+  - id: 3
+    text: "Give a conference talk"
+    status: "done"
+    date_completed: "2025-11-10"
+    note: "AWS Community Day"
