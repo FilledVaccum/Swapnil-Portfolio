@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import GridLayout from '../../layouts/GridLayout.astro';
+import BookCard from '../../components/BookCard.astro';
+
+const books = (await getCollection('bookself'))
+  .filter(b => !b.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<GridLayout title="Bookself">
+  <h1>Bookself</h1>
+  <p class="section-desc">Books I've read, am reading, or abandoned with no shame.</p>
+  <div class="card-list">
+    {books.map(book => (
+      <BookCard
+        title={book.data.title}
+        author={book.data.author}
+        href={`/bookself/${book.id}`}
+        rating={book.data.rating}
+        status={book.data.status}
+        tags={book.data.tags}
+        cover={book.data.cover}
+      />
+    ))}
+  </div>
+</GridLayout>
+
+<style>
+  h1 { margin-bottom: var(--space-sm); }
+  .section-desc {
+    color: var(--color-warm-gray);
+    margin-bottom: var(--space-xl);
+  }
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+</style>

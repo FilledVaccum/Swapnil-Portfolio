@@ -1,0 +1,36 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import List100Item from '../components/List100Item.astro';
+import yaml from 'js-yaml';
+import fs from 'node:fs';
+
+const listData = yaml.load(fs.readFileSync('data/list100.yaml', 'utf8')) as { items: any[] };
+const items = listData.items;
+const doneCount = items.filter(i => i.status === 'done').length;
+---
+
+<ContentLayout title="List 100">
+  <h1>List 100</h1>
+  <p class="section-desc">
+    {doneCount} of {items.length} done.
+  </p>
+  <div class="list-container">
+    {items.map(item => (
+      <List100Item
+        id={item.id}
+        text={item.text}
+        status={item.status}
+        note={item.note}
+        date_completed={item.date_completed}
+      />
+    ))}
+  </div>
+</ContentLayout>
+
+<style>
+  h1 { margin-bottom: var(--space-sm); }
+  .section-desc {
+    color: var(--color-warm-gray);
+    margin-bottom: var(--space-xl);
+  }
+</style>

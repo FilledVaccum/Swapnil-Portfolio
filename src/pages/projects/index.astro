@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import GridLayout from '../../layouts/GridLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<GridLayout title="Projects">
+  <h1>Projects</h1>
+  <div class="card-grid">
+    {projects.map(project => (
+      <ProjectCard
+        title={project.data.title}
+        href={`/projects/${project.id}`}
+        tech={project.data.tech}
+        tags={project.data.tags}
+        image={project.data.image}
+        github={project.data.github}
+        live={project.data.live}
+      />
+    ))}
+  </div>
+</GridLayout>
+
+<style>
+  h1 { margin-bottom: var(--space-xl); }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+  }
+</style>

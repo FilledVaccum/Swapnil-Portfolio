@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import GridLayout from '../../layouts/GridLayout.astro';
+import TalkCard from '../../components/TalkCard.astro';
+
+const talks = (await getCollection('talks'))
+  .filter(t => !t.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<GridLayout title="Talks">
+  <h1>Talks</h1>
+  <div class="card-grid">
+    {talks.map(talk => (
+      <TalkCard
+        title={talk.data.title}
+        event={talk.data.event}
+        href={`/talks/${talk.id}`}
+        date={talk.data.date}
+        tags={talk.data.tags}
+        video={talk.data.video}
+        slides={talk.data.slides}
+      />
+    ))}
+  </div>
+</GridLayout>
+
+<style>
+  h1 { margin-bottom: var(--space-xl); }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+  }
+</style>

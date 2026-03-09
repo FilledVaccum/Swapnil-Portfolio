@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import GridLayout from '../../layouts/GridLayout.astro';
+import Card from '../../components/Card.astro';
+
+const posts = (await getCollection('blog'))
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<GridLayout title="Blog">
+  <h1>Blog</h1>
+  <div class="card-grid">
+    {posts.map(post => (
+      <Card
+        title={post.data.title}
+        href={`/blog/${post.id}`}
+        description={post.data.description}
+        date={post.data.date}
+        tags={post.data.tags}
+      />
+    ))}
+  </div>
+</GridLayout>
+
+<style>
+  h1 {
+    margin-bottom: var(--space-xl);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import GridLayout from '../../layouts/GridLayout.astro';
+import PaperCard from '../../components/PaperCard.astro';
+
+const papers = (await getCollection('paperself'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<GridLayout title="Paperself">
+  <h1>Paperself</h1>
+  <p class="section-desc">Papers I've read, with my notes and takeaways.</p>
+  <div class="card-list">
+    {papers.map(paper => (
+      <PaperCard
+        title={paper.data.title}
+        authors={paper.data.authors}
+        href={`/paperself/${paper.id}`}
+        year={paper.data.year}
+        rating={paper.data.rating}
+        tags={paper.data.tags}
+      />
+    ))}
+  </div>
+</GridLayout>
+
+<style>
+  h1 { margin-bottom: var(--space-sm); }
+  .section-desc {
+    color: var(--color-warm-gray);
+    margin-bottom: var(--space-xl);
+  }
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+</style>
