@@ -1,0 +1,105 @@
+---
+import TagList from './TagList.astro';
+
+interface Props {
+  title: string;
+  href: string;
+  description?: string;
+  tech: string[];
+  tags: string[];
+  image?: string;
+  github?: string;
+  live?: string;
+}
+
+const { title, href, description, tech, tags, image, github, live } = Astro.props;
+---
+
+<a href={href} class="project-card">
+  {image && (
+    <div class="project-image">
+      <img src={image} alt={title} loading="lazy" />
+    </div>
+  )}
+  <div class="project-body">
+    <h3 class="project-title">{title}</h3>
+    {description && <p class="project-desc">{description}</p>}
+    <div class="project-tech">
+      {tech.map(t => (
+        <span class="tech-badge">{t}</span>
+      ))}
+    </div>
+    <TagList tags={tags} />
+    <div class="project-links">
+      {github && <span class="project-link-hint">GitHub</span>}
+      {live && <span class="project-link-hint">Live</span>}
+    </div>
+  </div>
+</a>
+
+<style>
+  .project-card {
+    display: block;
+    background: var(--color-cream-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .project-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .project-image img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+
+  .project-body {
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+  }
+
+  .project-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-charcoal);
+    margin-bottom: var(--space-sm);
+  }
+
+  .project-desc {
+    font-size: var(--text-sm);
+    color: var(--color-warm-gray);
+    margin-bottom: var(--space-sm);
+    line-height: 1.6;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+  }
+
+  .tech-badge {
+    font-size: var(--text-xs);
+    color: var(--color-clay);
+    border: 1px solid var(--color-clay);
+    padding: 0.1em 0.5em;
+    border-radius: 999px;
+  }
+
+  .project-links {
+    display: flex;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+
+  .project-link-hint {
+    font-size: var(--text-xs);
+    color: var(--color-warm-gray);
+  }
+</style>

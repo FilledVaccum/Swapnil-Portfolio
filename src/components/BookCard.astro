@@ -1,0 +1,99 @@
+---
+import TagList from './TagList.astro';
+
+interface Props {
+  title: string;
+  author: string;
+  href: string;
+  rating?: number;
+  status: string;
+  tags: string[];
+  cover?: string;
+}
+
+const { title, author, href, rating, status, tags, cover } = Astro.props;
+---
+
+<a href={href} class="book-card">
+  {cover && (
+    <div class="book-cover">
+      <img src={cover} alt={title} loading="lazy" />
+    </div>
+  )}
+  <div class="book-body">
+    <h3 class="book-title">{title}</h3>
+    <p class="book-author">{author}</p>
+    <div class="book-meta">
+      {rating && (
+        <span class="book-rating">
+          {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
+        </span>
+      )}
+      <span class={`book-status status-${status}`}>{status}</span>
+    </div>
+    <TagList tags={tags} />
+  </div>
+</a>
+
+<style>
+  .book-card {
+    display: flex;
+    gap: var(--space-md);
+    background: var(--color-cream-light);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    text-decoration: none;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .book-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .book-cover {
+    flex-shrink: 0;
+    width: 80px;
+  }
+
+  .book-cover img {
+    border-radius: var(--radius-sm);
+    width: 100%;
+  }
+
+  .book-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-charcoal);
+    margin-bottom: var(--space-xs);
+  }
+
+  .book-author {
+    font-size: var(--text-sm);
+    color: var(--color-warm-gray);
+    margin-bottom: var(--space-sm);
+  }
+
+  .book-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+  }
+
+  .book-rating {
+    color: var(--color-clay);
+    font-size: var(--text-sm);
+  }
+
+  .book-status {
+    font-size: var(--text-xs);
+    padding: 0.15em 0.6em;
+    border-radius: 999px;
+  }
+
+  .status-finished { background: rgba(122, 139, 111, 0.15); color: var(--color-olive); }
+  .status-reading { background: rgba(176, 125, 98, 0.15); color: var(--color-clay); }
+  .status-abandoned { background: rgba(212, 203, 194, 0.3); color: var(--color-warm-gray); }
+</style>
