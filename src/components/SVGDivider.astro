@@ -1,0 +1,33 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['svg-divider', className]}>
+  <svg viewBox="0 0 800 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M0,20 C100,35 200,5 300,20 C400,35 500,5 600,20 C700,35 800,15 800,20"
+      fill="none"
+      stroke="var(--color-stone)"
+      stroke-width="1.5"
+      stroke-linecap="round"
+    />
+  </svg>
+</div>
+
+<style>
+  .svg-divider {
+    width: 100%;
+    max-width: 200px;
+    margin: var(--space-xl) auto;
+    opacity: 0.6;
+  }
+
+  .svg-divider svg {
+    width: 100%;
+    height: auto;
+  }
+</style>
