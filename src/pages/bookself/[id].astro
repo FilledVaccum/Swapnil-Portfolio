@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import ContentHeader from '../../components/ContentHeader.astro';
+
+export async function getStaticPaths() {
+  const books = await getCollection('bookself');
+  return books.map(b => ({ params: { id: b.id }, props: { book: b } }));
+}
+
+const { book } = Astro.props;
+const { Content } = await render(book);
+---
+
+<ContentLayout title={book.data.title}>
+  <ContentHeader
+    title={book.data.title}
+    date={book.data.date}
+    tags={book.data.tags}
+  />
+  <div class="book-meta">
+    <p><strong>Author:</strong> {book.data.author}</p>
+    <p><strong>Status:</strong> {book.data.status}</p>
+    {book.data.rating && <p><strong>Rating:</strong> {'★'.repeat(book.data.rating)}{'☆'.repeat(5 - book.data.rating)}</p>}
+  </div>
+  <article class="prose">
+    <Content />
+  </article>
+</ContentLayout>
+
+<style>
+  .book-meta {
+    background: var(--color-cream-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+  .book-meta p { margin-bottom: var(--space-xs); font-size: var(--text-sm); }
+  .book-meta p:last-child { margin-bottom: 0; }
+  .prose :global(h2) { margin-top: var(--space-xl); margin-bottom: var(--space-md); }
+  .prose :global(p) { margin-bottom: var(--space-md); }
+</style>

@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import ContentHeader from '../../components/ContentHeader.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(p => ({ params: { id: p.id }, props: { project: p } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<ContentLayout title={project.data.title}>
+  <ContentHeader
+    title={project.data.title}
+    date={project.data.date}
+    tags={project.data.tags}
+  />
+  <div class="project-meta">
+    <p><strong>Tech:</strong> {project.data.tech.join(', ')}</p>
+    {project.data.github && <p><a href={project.data.github} target="_blank" rel="noopener noreferrer">GitHub →</a></p>}
+    {project.data.live && <p><a href={project.data.live} target="_blank" rel="noopener noreferrer">Live demo →</a></p>}
+  </div>
+  <article class="prose">
+    <Content />
+  </article>
+</ContentLayout>
+
+<style>
+  .project-meta {
+    background: var(--color-cream-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+  .project-meta p { margin-bottom: var(--space-xs); font-size: var(--text-sm); }
+  .project-meta p:last-child { margin-bottom: 0; }
+  .prose :global(h2) { margin-top: var(--space-xl); margin-bottom: var(--space-md); }
+  .prose :global(p) { margin-bottom: var(--space-md); }
+</style>

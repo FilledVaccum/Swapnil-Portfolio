@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import ContentHeader from '../../components/ContentHeader.astro';
+import DemoEmbed from '../../components/DemoEmbed.astro';
+
+export async function getStaticPaths() {
+  const demos = await getCollection('demos');
+  return demos.map(d => ({ params: { id: d.id }, props: { demo: d } }));
+}
+
+const { demo } = Astro.props;
+const { Content } = await render(demo);
+---
+
+<ContentLayout title={demo.data.title}>
+  <ContentHeader
+    title={demo.data.title}
+    date={demo.data.date}
+    tags={demo.data.tags}
+  />
+  <DemoEmbed title={demo.data.title} embed_url={demo.data.embed_url} />
+  <article class="prose">
+    <Content />
+  </article>
+</ContentLayout>
+
+<style>
+  .prose :global(h2) { margin-top: var(--space-xl); margin-bottom: var(--space-md); }
+  .prose :global(p) { margin-bottom: var(--space-md); }
+</style>

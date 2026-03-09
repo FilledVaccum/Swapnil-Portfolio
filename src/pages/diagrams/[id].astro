@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import ContentHeader from '../../components/ContentHeader.astro';
+
+export async function getStaticPaths() {
+  const diagrams = await getCollection('diagrams');
+  return diagrams.map(d => ({ params: { id: d.id }, props: { diagram: d } }));
+}
+
+const { diagram } = Astro.props;
+const { Content } = await render(diagram);
+---
+
+<ContentLayout title={diagram.data.title}>
+  <ContentHeader
+    title={diagram.data.title}
+    date={diagram.data.date}
+    tags={diagram.data.tags}
+  />
+  <article class="prose diagram-content">
+    <Content />
+  </article>
+</ContentLayout>
+
+<style>
+  .diagram-content :global(svg) {
+    max-width: 100%;
+    height: auto;
+    margin: var(--space-lg) 0;
+    background: var(--color-cream-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+  }
+  .prose :global(p) { margin-bottom: var(--space-md); }
+</style>

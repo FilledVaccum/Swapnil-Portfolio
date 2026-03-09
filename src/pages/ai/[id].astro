@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import ContentHeader from '../../components/ContentHeader.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('ai');
+  return posts.map(p => ({ params: { id: p.id }, props: { post: p } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<ContentLayout title={post.data.title}>
+  <ContentHeader
+    title={post.data.title}
+    date={post.data.date}
+    tags={post.data.tags}
+  />
+  <article class="prose">
+    <Content />
+  </article>
+</ContentLayout>
+
+<style>
+  .prose :global(h2) { margin-top: var(--space-xl); margin-bottom: var(--space-md); }
+  .prose :global(p) { margin-bottom: var(--space-md); }
+  .prose :global(ul), .prose :global(ol) { margin-bottom: var(--space-md); padding-left: var(--space-lg); }
+</style>

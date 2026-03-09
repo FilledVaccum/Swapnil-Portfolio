@@ -1,0 +1,43 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import ContentHeader from '../../components/ContentHeader.astro';
+
+export async function getStaticPaths() {
+  const papers = await getCollection('paperself');
+  return papers.map(p => ({ params: { id: p.id }, props: { paper: p } }));
+}
+
+const { paper } = Astro.props;
+const { Content } = await render(paper);
+---
+
+<ContentLayout title={paper.data.title}>
+  <ContentHeader
+    title={paper.data.title}
+    date={paper.data.date}
+    tags={paper.data.tags}
+  />
+  <div class="paper-meta">
+    <p><strong>Authors:</strong> {paper.data.authors.join(', ')}</p>
+    <p><strong>Published:</strong> {paper.data.year}</p>
+    {paper.data.rating && <p><strong>Rating:</strong> {'★'.repeat(paper.data.rating)}{'☆'.repeat(5 - paper.data.rating)}</p>}
+    <p><a href={paper.data.link} target="_blank" rel="noopener noreferrer">Read the paper →</a></p>
+  </div>
+  <article class="prose">
+    <Content />
+  </article>
+</ContentLayout>
+
+<style>
+  .paper-meta {
+    background: var(--color-cream-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+  .paper-meta p { margin-bottom: var(--space-xs); font-size: var(--text-sm); }
+  .paper-meta p:last-child { margin-bottom: 0; }
+  .prose :global(h2) { margin-top: var(--space-xl); margin-bottom: var(--space-md); }
+  .prose :global(p) { margin-bottom: var(--space-md); }
+</style>

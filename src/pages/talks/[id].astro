@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import ContentHeader from '../../components/ContentHeader.astro';
+
+export async function getStaticPaths() {
+  const talks = await getCollection('talks');
+  return talks.map(t => ({ params: { id: t.id }, props: { talk: t } }));
+}
+
+const { talk } = Astro.props;
+const { Content } = await render(talk);
+---
+
+<ContentLayout title={talk.data.title}>
+  <ContentHeader
+    title={talk.data.title}
+    date={talk.data.date}
+    tags={talk.data.tags}
+  />
+  <div class="talk-meta">
+    <p><strong>Event:</strong> {talk.data.event}</p>
+    {talk.data.video && <p><a href={talk.data.video} target="_blank" rel="noopener noreferrer">Watch video →</a></p>}
+    {talk.data.slides && <p><a href={talk.data.slides} target="_blank" rel="noopener noreferrer">View slides →</a></p>}
+  </div>
+  <article class="prose">
+    <Content />
+  </article>
+</ContentLayout>
+
+<style>
+  .talk-meta {
+    background: var(--color-cream-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+  .talk-meta p { margin-bottom: var(--space-xs); font-size: var(--text-sm); }
+  .talk-meta p:last-child { margin-bottom: 0; }
+  .prose :global(h2) { margin-top: var(--space-xl); margin-bottom: var(--space-md); }
+  .prose :global(p) { margin-bottom: var(--space-md); }
+</style>
