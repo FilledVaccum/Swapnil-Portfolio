@@ -19,7 +19,7 @@ const moreLinks = [
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="/" class="nav-name">Your Name</a>
+    <a href="/" class="nav-name">Swapnil Tiwari</a>
 
     <div class="nav-links" id="nav-links">
       {primaryLinks.map(link => (
@@ -239,24 +239,31 @@ const moreLinks = [
   }
 </style>
 
-<script>
-  const moreBtn = document.getElementById('more-btn');
-  const navMore = moreBtn?.closest('.nav-more');
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    var moreBtn = document.getElementById('more-btn');
+    var navMore = moreBtn ? moreBtn.closest('.nav-more') : null;
+    var hamburger = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobile-menu');
 
-  moreBtn?.addEventListener('click', () => {
-    navMore?.classList.toggle('open');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!navMore?.contains(e.target as Node)) {
-      navMore?.classList.remove('open');
+    if (moreBtn) {
+      moreBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (navMore) navMore.classList.toggle('open');
+      });
     }
-  });
 
-  hamburger?.addEventListener('click', () => {
-    hamburger.classList.toggle('open');
-    mobileMenu?.classList.toggle('open');
+    document.addEventListener('click', function(e) {
+      if (navMore && !navMore.contains(e.target)) {
+        navMore.classList.remove('open');
+      }
+    });
+
+    if (hamburger) {
+      hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('open');
+        if (mobileMenu) mobileMenu.classList.toggle('open');
+      });
+    }
   });
 </script>

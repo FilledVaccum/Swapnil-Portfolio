@@ -67,30 +67,12 @@ const recentReads = [...recentPapers.map(p => ({
       </div>
     </section>
 
-    <!-- Featured Projects -->
-    {featuredProjects.length > 0 && (
-      <section class="section">
-        <div class="section-inner">
-          <div class="section-header">
-            <h2>Projects</h2>
-            <a href="/projects" class="section-link">View all →</a>
-          </div>
-          <div class="card-grid">
-            {featuredProjects.map(project => (
-              <ProjectCard
-                title={project.data.title}
-                href={`/projects/${project.id}`}
-                tech={project.data.tech}
-                tags={project.data.tags}
-                image={project.data.image}
-                github={project.data.github}
-                live={project.data.live}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
+    <!-- Introduction -->
+    <section class="section intro-section">
+      <div class="section-inner">
+        <div class="intro-text" set:html={about.bio.replace(/\n/g, '<br/>')} />
+      </div>
+    </section>
 
     <SVGDivider />
 
@@ -138,6 +120,33 @@ const recentReads = [...recentPapers.map(p => ({
         </div>
       </section>
     )}
+
+    <SVGDivider />
+
+    <!-- Featured Projects -->
+    {featuredProjects.length > 0 && (
+      <section class="section">
+        <div class="section-inner">
+          <div class="section-header">
+            <h2>Projects</h2>
+            <a href="/projects" class="section-link">View all →</a>
+          </div>
+          <div class="card-grid">
+            {featuredProjects.map(project => (
+              <ProjectCard
+                title={project.data.title}
+                href={`/projects/${project.id}`}
+                tech={project.data.tech}
+                tags={project.data.tags}
+                image={project.data.image}
+                github={project.data.github}
+                live={project.data.live}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
   </main>
 </BaseLayout>
 
@@ -175,6 +184,14 @@ const recentReads = [...recentPapers.map(p => ({
     max-width: 400px;
     opacity: 1;
     z-index: 0;
+  }
+
+  /* Introduction */
+  .intro-text {
+    font-size: var(--text-lg);
+    color: var(--color-warm-gray);
+    max-width: var(--max-width-prose);
+    line-height: 1.8;
   }
 
   /* Sections */
