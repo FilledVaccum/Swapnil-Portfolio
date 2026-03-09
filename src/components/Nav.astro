@@ -211,13 +211,9 @@ const moreLinks = [
     border-top: 1px solid var(--color-stone);
   }
 
-  .nav-mobile.open {
-    display: flex;
-  }
-
-  @media (min-width: 768px) {
-    .nav-mobile {
-      display: none !important;
+  @media (max-width: 767px) {
+    .nav-mobile.open {
+      display: flex;
     }
   }
 
