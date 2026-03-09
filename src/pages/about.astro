@@ -1,0 +1,64 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import yaml from 'js-yaml';
+import fs from 'node:fs';
+
+const about = yaml.load(fs.readFileSync('data/about.yaml', 'utf8')) as {
+  name: string;
+  tagline: string;
+  bio: string;
+  social: Record<string, string>;
+};
+---
+
+<ContentLayout title={`About — ${about.name}`} description={about.tagline}>
+  <h1>{about.name}</h1>
+  <p class="tagline">{about.tagline}</p>
+  <div class="bio" set:html={about.bio.replace(/\n/g, '<br/>')} />
+  <div class="social-links">
+    {Object.entries(about.social).map(([platform, url]) => (
+      <a href={url} target="_blank" rel="noopener noreferrer" class="social-link">
+        {platform}
+      </a>
+    ))}
+  </div>
+</ContentLayout>
+
+<style>
+  h1 { margin-bottom: var(--space-xs); }
+
+  .tagline {
+    font-size: var(--text-lg);
+    color: var(--color-clay);
+    margin-bottom: var(--space-xl);
+  }
+
+  .bio {
+    font-size: var(--text-base);
+    line-height: 1.8;
+    margin-bottom: var(--space-xl);
+    color: var(--color-charcoal);
+  }
+
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .social-link {
+    font-size: var(--text-sm);
+    color: var(--color-warm-gray);
+    border: 1px solid var(--color-stone);
+    padding: 0.4em 1em;
+    border-radius: 999px;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: all var(--transition-fast);
+  }
+
+  .social-link:hover {
+    color: var(--color-clay);
+    border-color: var(--color-clay);
+  }
+</style>
