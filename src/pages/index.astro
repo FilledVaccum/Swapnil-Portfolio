@@ -1,18 +1,256 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SVGDivider from '../components/SVGDivider.astro';
+import yaml from 'js-yaml';
+import fs from 'node:fs';
+
+const about = yaml.load(fs.readFileSync('data/about.yaml', 'utf8')) as {
+  name: string;
+  tagline: string;
+  bio: string;
+};
+
+const featuredProjects = (await getCollection('projects'))
+  .filter(p => !p.data.draft && p.data.featured)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const recentPosts = (await getCollection('blog'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 5);
+
+const recentPapers = (await getCollection('paperself'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const recentBooks = (await getCollection('bookself'))
+  .filter(b => !b.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const recentReads = [...recentPapers.map(p => ({
+  title: p.data.title,
+  href: `/paperself/${p.id}`,
+  date: p.data.date,
+  tags: p.data.tags,
+  type: 'paper' as const,
+})), ...recentBooks.map(b => ({
+  title: b.data.title,
+  href: `/bookself/${b.id}`,
+  date: b.data.date,
+  tags: b.data.tags,
+  type: 'book' as const,
+}))]
+  .sort((a, b) => b.date.valueOf() - a.date.valueOf())
+  .slice(0, 3);
 ---
 
-<BaseLayout title="Home">
+<BaseLayout title={about.name} description={about.tagline}>
   <main>
-    <h1>Portfolio</h1>
-    <p>Site is under construction.</p>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-inner">
+        <h1 class="hero-name animate-fade-up">{about.name}</h1>
+        <p class="hero-tagline animate-fade-up">{about.tagline}</p>
+      </div>
+      <div class="hero-blob" aria-hidden="true">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <path fill="var(--color-clay)" fill-opacity="0.06"
+            d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.6,90,-16.3,88.5,-0.9C87,14.6,81.4,29.1,73.1,41.6C64.8,54.1,53.8,64.5,41,72.4C28.2,80.3,14.1,85.7,-0.8,87.1C-15.8,88.5,-31.5,85.8,-44.5,78.2C-57.5,70.6,-67.7,58,-74.5,44.1C-81.3,30.2,-84.7,15.1,-84.2,0.3C-83.7,-14.5,-79.3,-29,-71.3,-41.1C-63.4,-53.2,-51.9,-62.9,-39.1,-70.8C-26.3,-78.7,-13.2,-84.8,1.2,-86.9C15.5,-89,30.5,-83.6,44.7,-76.4Z"
+            transform="translate(100 100)" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- Featured Projects -->
+    {featuredProjects.length > 0 && (
+      <section class="section">
+        <div class="section-inner">
+          <div class="section-header">
+            <h2>Projects</h2>
+            <a href="/projects" class="section-link">View all →</a>
+          </div>
+          <div class="card-grid">
+            {featuredProjects.map(project => (
+              <ProjectCard
+                title={project.data.title}
+                href={`/projects/${project.id}`}
+                tech={project.data.tech}
+                tags={project.data.tags}
+                image={project.data.image}
+                github={project.data.github}
+                live={project.data.live}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <SVGDivider />
+
+    <!-- Recent Blog Posts -->
+    {recentPosts.length > 0 && (
+      <section class="section">
+        <div class="section-inner">
+          <div class="section-header">
+            <h2>Recent Writing</h2>
+            <a href="/blog" class="section-link">View all →</a>
+          </div>
+          <div class="post-list">
+            {recentPosts.map(post => (
+              <a href={`/blog/${post.id}`} class="post-item">
+                <time datetime={post.data.date.toISOString()}>
+                  {post.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                </time>
+                <span class="post-title">{post.data.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <SVGDivider />
+
+    <!-- Recent Reads -->
+    {recentReads.length > 0 && (
+      <section class="section">
+        <div class="section-inner">
+          <div class="section-header">
+            <h2>Recent Reads</h2>
+          </div>
+          <div class="card-grid card-grid-sm">
+            {recentReads.map(read => (
+              <Card
+                title={read.title}
+                href={read.href}
+                date={read.date}
+                tags={[read.type, ...read.tags]}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
   </main>
 </BaseLayout>
 
 <style>
-  main {
-    max-width: var(--max-width-prose);
-    margin: var(--space-2xl) auto;
+  /* Hero */
+  .hero {
+    position: relative;
+    max-width: var(--max-width-page);
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-lg);
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-name {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: var(--space-sm);
+  }
+
+  .hero-tagline {
+    font-size: var(--text-lg);
+    color: var(--color-warm-gray);
+    max-width: 500px;
+  }
+
+  .hero-blob {
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 60%;
+    max-width: 400px;
+    opacity: 1;
+    z-index: 0;
+  }
+
+  /* Sections */
+  .section {
+    max-width: var(--max-width-page);
+    margin: 0 auto;
     padding: 0 var(--space-lg);
+  }
+
+  .section-inner {
+    padding: var(--space-lg) 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-lg);
+  }
+
+  .section-header h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .section-link {
+    font-size: var(--text-sm);
+    color: var(--color-clay);
+  }
+
+  /* Card grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .card-grid-sm {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+
+  /* Post list (blog) */
+  .post-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-lg);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-stone);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .post-item:last-child {
+    border-bottom: none;
+  }
+
+  .post-item:hover .post-title {
+    color: var(--color-clay);
+  }
+
+  .post-item time {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-stone);
+    flex-shrink: 0;
+    min-width: 60px;
+  }
+
+  .post-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-charcoal);
+    transition: color var(--transition-fast);
   }
 </style>
